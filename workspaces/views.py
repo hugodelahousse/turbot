@@ -8,7 +8,6 @@ def oauth(request):
 
 
 def test(request):
-    print(request.body)
     return 'ok'
 
 

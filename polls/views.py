@@ -1,15 +1,17 @@
+import logging
 import re
 
 from django.db import transaction
 from django.http import HttpResponse
 
-from polls.models import Poll, UserChoice
+from polls.models import Poll, Choice
 from workspaces.models import User
 from workspaces.utils import SlackErrorResponse, get_request_entities, register_slack_action
 from slackclient import SlackClient
 from django.conf import settings
 
 sc = SlackClient(settings.SLACK_API_TOKEN)
+logger = logging.getLogger('django')
 
 
 @transaction.atomic
@@ -19,15 +21,17 @@ def vote(payload):
         'name': payload['user']['username']
     })
 
-    choice, created = UserChoice.objects.get_or_create(user=user, choice_id=payload['actions'][0]['action_id'])
+    choice = Choice.objects.prefetch_related('voters').get(id=payload['actions'][0]['action_id'])
 
-    if not created:
-        choice.delete()
+    if choice.voters.filter(id=user.id).exists():
+        choice.voters.remove(user)
+    else:
+        choice.voters.add(user)
 
-    print(sc.api_call(
+    logger.debug(sc.api_call(
         'chat.update', ts=payload['message']['ts'], text='',
         channel=payload['channel']['id'], as_user=False,
-        blocks=choice.choice.poll.slack_blocks
+        blocks=choice.poll.slack_blocks
     ))
 
     return HttpResponse(status=200)
@@ -36,18 +40,22 @@ def vote(payload):
 @transaction.atomic
 @register_slack_action('polls.delete')
 def delete(payload):
-
     user = User.objects.get(id=payload['user']['id'])
     poll = Poll.objects.get(id=payload['actions'][0]['action_id'])
 
-    print(sc.api_call(
+    logger.debug(sc.api_call(
         'chat.delete',
         ts=payload['message']['ts'],
         channel=poll.channel.id,
         as_user=False,
     ))
 
-    print(sc.api_call('chat.postMessage', text=f'A poll was deleted by {user.slack_username}', channel=poll.channel.id, as_user=False))
+    logger.debug(sc.api_call(
+        'chat.postMessage',
+        text=f'A poll was deleted by {user.slack_username}',
+        channel=poll.channel.id,
+        as_user=False
+    ))
 
     poll.delete()
     return HttpResponse(status=200)
@@ -55,7 +63,6 @@ def delete(payload):
 
 @transaction.atomic
 def create(request):
-    print(request.POST)
     values = re.findall(r'\s*"([^"]+)"\s*', request.POST['text'])
     if len(values) < 3:
         return SlackErrorResponse(':x: You must provide a name and at least two choices :x:')
@@ -74,6 +81,12 @@ def create(request):
     for index, choice in enumerate(choices):
         poll.choices.create(index=index, text=choice)
 
-    print(sc.api_call('chat.postMessage', channel=channel.id, text='', blocks=poll.slack_blocks, as_user=False))
+    logger.debug(sc.api_call(
+        'chat.postMessage',
+        channel=channel.id,
+        text='',
+        blocks=poll.slack_blocks,
+        as_user=False
+    ))
 
     return HttpResponse(status=200)
