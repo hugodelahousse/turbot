@@ -12,19 +12,25 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
+environ.Env().read_env(str(BASE_DIR / '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#%#g5xhq+b(a6#0j#)qi&+(nu_6&^l8-$rdoa5_s($p(_ra*oe'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -83,10 +89,7 @@ WSGI_APPLICATION = 'acu_bot.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
-    }
+    'default': env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 }
 
 
@@ -128,4 +131,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-SLACK_API_TOKEN = 'xoxp-44576268562-407072038710-602078251190-99ddf88d46fea5b2646dcb6349b4ab4d'
+SLACK_API_TOKEN = env('SLACK_API_TOKEN')
