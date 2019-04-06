@@ -11,6 +11,10 @@ class Channel(models.Model):
     name = models.CharField(max_length=128, db_index=True)
     team = models.ForeignKey(Team, related_name='channels', on_delete=models.CASCADE)
 
+    @property
+    def slack_channel(self):
+        return f'<#{self.id}>'
+
 
 class User(models.Model):
     id = models.CharField(primary_key=True, db_index=True, max_length=30)
