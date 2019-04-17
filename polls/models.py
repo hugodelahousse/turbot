@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import CheckConstraint, Q
+from django.utils import timezone
 
 from workspaces.models import User, Team, Channel
 from workspaces.utils import int_to_emoji
@@ -9,13 +10,6 @@ class Poll(models.Model):
     name = models.CharField(max_length=256)
     creator = models.ForeignKey(User, related_name='created_polls', on_delete=models.CASCADE)
     channel = models.ForeignKey(Channel, related_name='polls', on_delete=models.CASCADE)
-
-    @property
-    def slack_buttons(self):
-        def choice_button(choice):
-            index = choice.index
-            return {'name': 'choice', 'text': f'{int_to_emoji(index)}', 'type': 'button', 'value': f'{index}'}
-        return list(map(choice_button, self.choices.all().order_by('index')))
 
     @property
     def slack_blocks(self):
@@ -45,7 +39,28 @@ class Poll(models.Model):
                 'type': 'divider'
             },
             *map(lambda c: c.slack_block, self.choices.order_by('index').prefetch_related('voters').all()),
+            {
+                'type': 'context',
+                'elements': [
+                    {
+                        'type': 'mrkdwn',
+                        'text': f'*Created By:* {self.creator.slack_username}',
+                    }
+                ]
+            },
+            {
+                'type': 'context',
+                'elements': [
+                    {
+                        'type': 'mrkdwn',
+                        'text': f'{timezone.now().strftime("Last updated: %x at %H:%M")}',
+                    }
+                ]
+            },
         ]
+
+    def __str__(self):
+        return f'Poll {self.name} created by: {self.creator.name} in {self.channel.name}'
 
 
 class Choice(models.Model):
@@ -67,7 +82,7 @@ class Choice(models.Model):
 
     @property
     def slack_text(self):
-        return f'{int_to_emoji(self.index)} {self.text}'
+        return f'{int_to_emoji(self.index)} {self.text}\t`{self.voters.count()}`'
 
     @property
     def slack_voters(self):
@@ -79,7 +94,7 @@ class Choice(models.Model):
             'type': 'section',
             'text': {
                 'type': 'mrkdwn',
-                'text': f'{int_to_emoji(self.index)} {self.text}\n{self.slack_voters}'
+                'text': f'{self.slack_text}\n{self.slack_voters}'
             },
             'accessory': {
                 'type': 'button',
@@ -92,6 +107,9 @@ class Choice(models.Model):
                 'value': 'polls.vote',
             }
         }
+
+    def __str__(self):
+        return f'Choice "{self.text}" of poll "{self.poll.name}" ({self.poll.id})'
 
 
 class UserChoice(models.Model):

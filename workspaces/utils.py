@@ -1,10 +1,14 @@
 from typing import Tuple
 
 from django.http import JsonResponse, HttpRequest
+from django.conf import settings
 
 from workspaces.models import Team, Channel, User
+import logging
 
 SLACK_ACTIONS = {}
+
+logger = logging.getLogger('django')
 
 
 def register_slack_action(name):
@@ -17,7 +21,11 @@ def register_slack_action(name):
 
 class SlackErrorResponse(JsonResponse):
     def __init__(self, text: str, *args, **kwargs):
-        super().__init__({'response_type': 'ephemeral', 'text': text}, *args, **kwargs)
+        super().__init__({
+            'response_type': 'ephemeral',
+            'text': text,
+            'icon_url': settings.ERROR_ICON_URL,
+        }, *args, **kwargs)
 
 
 def int_to_emoji(index: int):
@@ -25,7 +33,7 @@ def int_to_emoji(index: int):
 
 
 def get_request_entities(request: HttpRequest) -> Tuple[Team, Channel, User]:
-
+    logger.debug(request.POST)
     team, _ = Team.objects.get_or_create(
         id=request.POST['team_id'],
         defaults={'domain': request.POST['team_domain']}

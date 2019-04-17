@@ -148,3 +148,9 @@ LOGGING = {
         },
     },
 }
+
+DELETE_FORBIDDEN = [
+    'UBZ2414LW',
+]
+
+ERROR_ICON_URL = env('ERROR_ICON_URL', None)

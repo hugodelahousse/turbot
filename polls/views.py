@@ -21,7 +21,7 @@ def vote(payload):
         'name': payload['user']['username']
     })
 
-    choice = Choice.objects.prefetch_related('voters').get(id=payload['actions'][0]['action_id'])
+    choice = Choice.objects.prefetch_related('voters', 'poll').get(id=payload['actions'][0]['action_id'])
 
     if choice.voters.filter(id=user.id).exists():
         choice.voters.remove(user)
@@ -42,6 +42,16 @@ def vote(payload):
 def delete(payload):
     user = User.objects.get(id=payload['user']['id'])
     poll = Poll.objects.get(id=payload['actions'][0]['action_id'])
+
+    if user.id in settings.DELETE_FORBIDDEN:
+        logger.debug(sc.api_call(
+            'chat.postMessage',
+            text=f"I'm sorry {user.slack_username}, I'm afraid I can't do that..."
+            "Maybe try not being a dick next time?",
+            channel=poll.channel.id,
+            as_user=False,
+        ))
+        return HttpResponse(200)
 
     logger.debug(sc.api_call(
         'chat.delete',
@@ -86,7 +96,7 @@ def create(request):
         channel=channel.id,
         text='',
         blocks=poll.slack_blocks,
-        as_user=False
+        as_user=False,
     ))
 
     return HttpResponse(status=200)

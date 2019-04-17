@@ -11,6 +11,8 @@ django = "*"
 django-environ = "*"
 slackclient = "*"
 ujson = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"

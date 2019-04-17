@@ -15,6 +15,9 @@ class Channel(models.Model):
     def slack_channel(self):
         return f'<#{self.id}>'
 
+    def __str__(self):
+        return f'{self.name} {self.slack_channel}'
+
 
 class User(models.Model):
     id = models.CharField(primary_key=True, db_index=True, max_length=30)
@@ -24,3 +27,6 @@ class User(models.Model):
     @property
     def slack_username(self):
         return f'<@{self.id}>'
+
+    def __str__(self):
+        return f'{self.name} {self.slack_username}'
