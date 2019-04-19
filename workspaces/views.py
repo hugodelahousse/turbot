@@ -3,11 +3,36 @@ import requests
 
 import ujson as json
 from django.http import HttpResponse, JsonResponse
+from slackclient import SlackClient
 
+from acu_bot import settings
 from workspaces.models import User
-from workspaces.utils import SLACK_ACTIONS
+from workspaces.utils import SLACK_ACTIONS, register_slack_action
 
 logger = logging.getLogger('django')
+sc = SlackClient(settings.SLACK_API_TOKEN)
+
+
+def get_photo_blocks(login, url, stalker=None):
+    blocks = [
+        {'type': 'section', 'text': {'type': 'mrkdwn', 'text': f'*{login}*'}},
+        {'type': 'image', 'title': {'type': 'plain_text', 'text': f'{login}'}, 'image_url': url,
+         'alt_text': f'{login}'},
+        {
+            'type': 'actions',
+            'elements': [
+                {
+                    'type': 'button', 'text': {'type': 'plain_text', 'text': 'Send to Channel', },
+                    'action_id': login, 'value': 'photo.post',
+                }
+            ]
+        },
+    ]
+    if stalker:
+        blocks.append(
+            {'type': 'context', 'elements': [{'type': 'mrkdwn', 'text': f'*Stalké Par: {stalker.slack_username}*'}]})
+
+    return blocks
 
 
 def oauth(request):
@@ -31,35 +56,21 @@ def photo(request):
     if response.status_code != 200:
         return HttpResponse('No such login')
 
-    stalker = User(id=request.POST['user_id'])
-
     return JsonResponse({
         'text': '',
-        'blocks': [
-            {
-                'type': 'section',
-                'text': {
-                    'type': 'mrkdwn',
-                    'text': f'*{login}*'
-                }
-            },
-            {
-                'type': 'image',
-                'title': {
-                    'type': 'plain_text',
-                    'text': f'{login}',
-                },
-                'image_url': response.url,
-                'alt_text': f'{login}'
-            },
-            {
-                'type': 'context',
-                'elements': [
-                    {
-                        'type': 'mrkdwn',
-                        'text': f'*Stalké Par: {stalker.slack_username}*'
-                    }
-                ]
-            }
-        ]
+        'blocks': get_photo_blocks(login, response.url)
     })
+
+
+@register_slack_action('photo.post')
+def post_photo(payload):
+    stalker = User(payload['user']['id'])
+    login = payload['actions'][0]['action_id']
+    logger.debug(sc.api_call(
+        'chat.postMessage',
+        text='',
+        blocks=get_photo_blocks(login, f'https://photos.cri.epita.fr/thumb/{login}', stalker),
+        channel=payload['channel']['id'],
+        as_user=False,
+    ))
+    return HttpResponse(200)
