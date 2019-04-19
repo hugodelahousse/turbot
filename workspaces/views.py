@@ -18,7 +18,10 @@ def get_photo_blocks(login, url, stalker=None):
         {'type': 'section', 'text': {'type': 'mrkdwn', 'text': f'*{login}*'}},
         {'type': 'image', 'title': {'type': 'plain_text', 'text': f'{login}'}, 'image_url': url,
          'alt_text': f'{login}'},
-        {
+
+    ]
+    if not stalker:
+        blocks.append({
             'type': 'actions',
             'elements': [
                 {
@@ -26,8 +29,8 @@ def get_photo_blocks(login, url, stalker=None):
                     'action_id': login, 'value': 'photo.post',
                 }
             ]
-        },
-    ]
+        })
+
     if stalker:
         blocks.append(
             {'type': 'context', 'elements': [{'type': 'mrkdwn', 'text': f'*Stalké Par: {stalker.slack_username}*'}]})
