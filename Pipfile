@@ -13,6 +13,7 @@ slackclient = "*"
 ujson = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
