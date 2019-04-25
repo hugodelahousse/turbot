@@ -69,11 +69,20 @@ def photo(request):
 def post_photo(payload):
     stalker = User(payload['user']['id'])
     login = payload['actions'][0]['action_id']
+
+    blocks = get_photo_blocks(
+            login,
+            f'https://photos.cri.epita.fr/thumb/{login}',
+            stalker
+    )
+
+    logging.debug(blocks)
+
     logger.debug(sc.api_call(
         'chat.postMessage',
         text='',
-        blocks=get_photo_blocks(login, f'https://photos.cri.epita.fr/thumb/{login}', stalker),
         channel=payload['channel']['id'],
+        blocks=blocks,
         as_user=False,
     ))
     return HttpResponse(200)
