@@ -9,8 +9,8 @@ from acu_bot import settings
 from workspaces.models import User
 from workspaces.utils import SLACK_ACTIONS, register_slack_action
 
-logger = logging.getLogger('django')
 sc = SlackClient(settings.SLACK_API_TOKEN)
+logger = logging.getLogger('django')
 
 
 def get_photo_blocks(login, url, stalker=None):
@@ -76,7 +76,7 @@ def post_photo(payload):
             stalker
     )
 
-    logging.debug(blocks)
+    logger.debug(blocks)
 
     logger.debug(sc.api_call(
         'chat.postMessage',
