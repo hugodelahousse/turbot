@@ -25,6 +25,7 @@ class User(models.Model):
     name = models.CharField(max_length=128, db_index=True)
     team = models.ForeignKey(Team, related_name='users', on_delete=models.CASCADE)
     suffix = models.CharField(max_length=128, default='', blank=True)
+    has_permissions = models.BooleanField(default=False)
 
     @property
     def slack_username(self):

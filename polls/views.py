@@ -43,11 +43,10 @@ def delete(payload):
     user = User.objects.get(id=payload['user']['id'])
     poll = Poll.objects.get(id=payload['actions'][0]['action_id'])
 
-    if user.id in settings.DELETE_FORBIDDEN:
+    if not user.has_permissions:
         logger.debug(sc.api_call(
             'chat.postMessage',
-            text=f"I'm sorry {user.slack_username}, I'm afraid I can't do that..."
-            "Maybe try not being a dick next time?",
+            text=f"I'm sorry {user.slack_username}, I'm afraid I can't do that...",
             channel=poll.channel.id,
             as_user=False,
         ))
