@@ -86,7 +86,7 @@ class Choice(models.Model):
 
     @property
     def slack_voters(self):
-        return ' '.join([user.slack_username for user in self.voters.all()])
+        return ' '.join(map(lambda u: u.slack_username, self.voters.all()))
 
     @property
     def slack_block(self):
@@ -115,6 +115,8 @@ class Choice(models.Model):
 class UserChoice(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'choice')
+        ordering = ('created_at', )
