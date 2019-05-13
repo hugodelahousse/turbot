@@ -37,7 +37,13 @@ def send_submission(submission: models.Submission):
     if 'jpg' in submission.url or 'png' in submission.url:
         blocks.append({'type': 'image', 'image_url': submission.url, 'alt_text': submission.url})
 
-    blocks.append({'type': 'context', 'elements': [{'type': 'mrkdwn', 'text': f'/r/{submission.subreddit}'}]})
+    blocks.append({
+        'type': 'context',
+        'elements': [{
+            'type': 'mrkdwn',
+            'text': f'<https://reddit.com/r/{submission.subreddit}|/r/{submission.subreddit}>'
+        }]
+    })
 
     settings.SLACK_CLIENT.chat_postMessage(
         channel=submission.channel.id,
