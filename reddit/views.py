@@ -67,6 +67,6 @@ def trigger(request):
         text=f'{creator} triggered acu-reddit',
     )
 
-    trigger_submissions(channel)
+    trigger_submissions(channel.id)
 
     return HttpResponse(status=200)
