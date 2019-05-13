@@ -3,13 +3,13 @@ import requests
 
 import ujson as json
 from django.http import HttpResponse, JsonResponse
-from slackclient import SlackClient
+from slack import WebClient
 
 from acu_bot import settings
 from workspaces.models import User
 from workspaces.utils import SLACK_ACTIONS, register_slack_action
 
-sc = SlackClient(settings.SLACK_API_TOKEN)
+sc = WebClient(settings.SLACK_API_TOKEN)
 logger = logging.getLogger('django')
 
 
@@ -78,8 +78,7 @@ def post_photo(payload):
 
     logger.debug(blocks)
 
-    logger.debug(sc.api_call(
-        'chat.postMessage',
+    logger.debug(sc.chat_postMessage(
         text='',
         channel=payload['channel']['id'],
         blocks=blocks,

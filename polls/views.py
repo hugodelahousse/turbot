@@ -7,10 +7,10 @@ from django.http import HttpResponse
 from polls.models import Poll, Choice
 from workspaces.models import User
 from workspaces.utils import SlackErrorResponse, get_request_entities, register_slack_action
-from slackclient import SlackClient
+from slack import WebClient
 from django.conf import settings
 
-sc = SlackClient(settings.SLACK_API_TOKEN)
+sc = WebClient(settings.SLACK_API_TOKEN)
 logger = logging.getLogger('django')
 
 
@@ -28,8 +28,8 @@ def vote(payload):
     else:
         choice.voters.add(user)
 
-    logger.debug(sc.api_call(
-        'chat.update', ts=payload['message']['ts'], text='',
+    logger.debug(sc.chat_update(
+        s=payload['message']['ts'], text='',
         channel=payload['channel']['id'], as_user=False,
         blocks=choice.poll.slack_blocks
     ))
@@ -44,23 +44,20 @@ def delete(payload):
     poll = Poll.objects.get(id=payload['actions'][0]['action_id'])
 
     if not user.has_permissions:
-        logger.debug(sc.api_call(
-            'chat.postMessage',
+        logger.debug(sc.chat_postMessage(
             text=f"I'm sorry {user.slack_username}, I'm afraid I can't do that...",
             channel=poll.channel.id,
             as_user=False,
         ))
         return HttpResponse(200)
 
-    logger.debug(sc.api_call(
-        'chat.delete',
+    logger.debug(sc.chat_delete(
         ts=payload['message']['ts'],
         channel=poll.channel.id,
         as_user=False,
     ))
 
-    logger.debug(sc.api_call(
-        'chat.postMessage',
+    logger.debug(sc.chat_postMessage(
         text=f'A poll was deleted by {user.slack_username}',
         channel=poll.channel.id,
         as_user=False
@@ -90,8 +87,7 @@ def create(request):
     for index, choice in enumerate(choices):
         poll.choices.create(index=index, text=choice)
 
-    logger.debug(sc.api_call(
-        'chat.postMessage',
+    logger.debug(sc.chat_postMessage(
         channel=channel.id,
         text='',
         blocks=poll.slack_blocks,

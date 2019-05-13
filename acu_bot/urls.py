@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('workspaces.urls')),
     path('polls/', include('polls.urls', namespace='polls')),
+    path('reddit/', include('reddit.urls', namespace='reddit')),
 ]

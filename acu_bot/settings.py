@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from pathlib import Path
 import environ
-
+from slack import WebClient
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -53,6 +53,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'polls.apps.PollsConfig',
     'workspaces.apps.WorkspacesConfig',
+    'reddit.apps.RedditConfig',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -163,3 +164,11 @@ DELETE_FORBIDDEN = [
 ]
 
 ERROR_ICON_URL = env('ERROR_ICON_URL', None)
+
+PRAW_CLIENT_ID = env('PRAW_CLIENT_ID')
+PRAW_CLIENT_SECRET = env('PRAW_CLIENT_SECRET')
+PRAW_USER_AGENT = env('PRAW_USER_AGENT', default='acu-slack-bot by /u/guhogu')
+
+REDDIT_SUBMISSION_CACHE_COUNT = env('REDDIT_SUBMISSION_CACHE_COUNT', default=5)
+
+SLACK_CLIENT = WebClient(SLACK_API_TOKEN)

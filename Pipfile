@@ -9,12 +9,13 @@ ipython = "*"
 [packages]
 django = "*"
 django-environ = "*"
-slackclient = "*"
+slackclient = ">=2.0.0"
 ujson = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 requests = "*"
 whitenoise = "*"
+praw = "*"
 
 [requires]
 python_version = "3.7"
