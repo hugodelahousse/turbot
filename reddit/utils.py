@@ -47,8 +47,12 @@ def send_submission(submission: models.Submission):
     )
 
 
-def trigger_submissions():
-    for channel_id in models.Subscription.objects.values_list('channel', flat=True).distinct():
+def trigger_submissions(*channels):
+    queryset = models.Subscription.objects
+    if not channels:
+        queryset = queryset.filter(channel_id__in=channels)
+
+    for channel_id in queryset.values_list('channel', flat=True).distinct():
         channel = models.Channel.objects.get(pk=channel_id)
         submission = get_submission(channel)
         if submission:

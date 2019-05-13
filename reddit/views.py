@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
-from .utils import reddit
+from .utils import reddit, trigger_submissions
 from . import models
 
 from workspaces.utils import get_request_entities, SlackErrorResponse
@@ -9,7 +9,7 @@ from workspaces.utils import get_request_entities, SlackErrorResponse
 
 @transaction.atomic
 def subscribe(request):
-    team, channel, creator = get_request_entities(request)
+    _, channel, creator = get_request_entities(request)
 
     try:
         subreddit = reddit.subreddit(request.POST['text'])
@@ -36,7 +36,7 @@ def subscribe(request):
 
 @transaction.atomic
 def unsubscribe(request):
-    team, channel, creator = get_request_entities(request)
+    _, channel, creator = get_request_entities(request)
     subreddit = request.POST['text']
 
     try:
@@ -54,4 +54,19 @@ def unsubscribe(request):
         as_user=False,
         text=f'{creator} unsubscribed the channel from `{subreddit}`',
     )
-    return HttpResponse(200)
+    return HttpResponse(status=200)
+
+
+@transaction.atomic
+def trigger(request):
+    _, channel, creator = get_request_entities(request)
+
+    settings.SLACK_CLIENT.chat_postMessage(
+        channel=channel.id,
+        as_user=False,
+        text=f'{creator} triggered acu-reddit',
+    )
+
+    trigger_submissions(channel)
+
+    return HttpResponse(status=200)
