@@ -13,22 +13,23 @@ def subscribe(request):
 
     try:
         subreddit = reddit.subreddit(request.POST['text'])
+        subreddit.id
     except Exception:
         return SlackErrorResponse(f'Invalid subreddit name: `{request.POST["text"]}`')
 
-    subscription, created = models.Subscription.objects.create(
+    subscription, created = models.Subscription.objects.get_or_create(
         creator=creator,
         channel=channel,
-        subreddit=subreddit.name
+        subreddit=subreddit.display_name,
     )
 
     if not created:
-        return SlackErrorResponse(f'Already subscribed to: `{subreddit.name}`')
+        return SlackErrorResponse(f'Already subscribed to: `{subreddit.display_name}`')
 
     settings.SLACK_CLIENT.chat_postMessage(
         channel=channel,
         as_user=False,
-        text=f'{creator} added subscription to {subreddit.name}'
+        text=f'{creator} added subscription to {subreddit.display_name}'
     )
     return HttpResponse(status=200)
 
