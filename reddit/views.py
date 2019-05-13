@@ -27,7 +27,7 @@ def subscribe(request):
         return SlackErrorResponse(f'Already subscribed to: `{subreddit.display_name}`')
 
     settings.SLACK_CLIENT.chat_postMessage(
-        channel=channel,
+        channel=channel.id,
         as_user=False,
         text=f'{creator} added subscription to {subreddit.display_name}'
     )
@@ -50,7 +50,7 @@ def unsubscribe(request):
     subscription.delete()
 
     settings.SLACK_CLIENT.chat_postMessage(
-        channel=channel,
+        channel=channel.id,
         as_user=False,
         text=f'{creator} unsubscribed the channel from `{subreddit}`',
     )
