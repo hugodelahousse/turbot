@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import environ
 from slack import WebClient
+from dateutil import parser
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -172,3 +173,6 @@ PRAW_USER_AGENT = env('PRAW_USER_AGENT', default='acu-slack-bot by /u/guhogu')
 REDDIT_SUBMISSION_CACHE_COUNT = env('REDDIT_SUBMISSION_CACHE_COUNT', default=5)
 
 SLACK_CLIENT = WebClient(SLACK_API_TOKEN)
+
+NIGHT_START = parser.parse(env('NIGHT_START', default='23:00')).time()
+NIGHT_END = parser.parse(env('NIGHT_END', default='09:00')).time()

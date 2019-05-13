@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 import praw
 from django.conf import settings
@@ -18,7 +19,7 @@ def get_submission(channel: models.Channel) -> Optional[models.Submission]:
     posts = filter(lambda p: 'jpg' in p.url or 'png' in p.url, posts)
 
     for post in posts:
-        if models.Submission.objects.filter(channel=channel, post_id=post.id).exists():
+        if models.Submission.objects.filter(channel_id=channel.id, post_id=post.id).exists():
             continue
         return models.Submission.objects.create(
             channel=channel,
@@ -53,7 +54,10 @@ def send_submission(submission: models.Submission):
     )
 
 
-def trigger_submissions(*channels):
+def trigger_submissions(*channels, respect_datetime=True):
+    now = datetime.now().time()
+    if respect_datetime and settings.NIGHT_START < now < settings.NIGHT_END:
+        return
     queryset = models.Subscription.objects
     if channels:
         queryset = queryset.filter(channel_id__in=channels)
