@@ -20,6 +20,9 @@ class Submission(models.Model):
             .order_by('-created_at')[settings.REDDIT_SUBMISSION_CACHE_COUNT:]
         Submission.objects.filter(pk__in=old_submissions).delete()
 
+    def __str__(self):
+        return f'Submission<{self.title}[{self.post_id}] in {self.channel.id}>'
+
 
 class Subscription(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
