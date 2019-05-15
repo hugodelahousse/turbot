@@ -60,7 +60,7 @@ def photo(request):
         return HttpResponse('No such login')
 
     return JsonResponse({
-        'text': '',
+        'text': f'CRI Picture of {login}',
         'blocks': get_photo_blocks(login, response.url)
     })
 
@@ -79,7 +79,7 @@ def post_photo(payload):
     logger.debug(blocks)
 
     logger.debug(sc.chat_postMessage(
-        text='',
+        text=f'CRI Picture of {login}',
         channel=payload['channel']['id'],
         blocks=blocks,
         as_user=False,

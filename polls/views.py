@@ -29,8 +29,10 @@ def vote(payload):
         choice.voters.add(user)
 
     logger.debug(sc.chat_update(
-        ts=payload['message']['ts'], text='',
-        channel=payload['channel']['id'], as_user=False,
+        ts=payload['message']['ts'],
+        text=f'Poll: {choice.poll.name}',
+        channel=payload['channel']['id'],
+        as_user=False,
         blocks=choice.poll.slack_blocks
     ))
 
@@ -89,7 +91,7 @@ def create(request):
 
     logger.debug(sc.chat_postMessage(
         channel=channel.id,
-        text='',
+        text=f'Poll: {poll.name}',
         blocks=poll.slack_blocks,
         as_user=False,
     ))
