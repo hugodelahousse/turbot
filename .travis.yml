@@ -19,3 +19,7 @@ jobs:
     - stage: black
       install: pip install black
       script: black --check .
+
+branches:
+  only:
+    - master
