@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - '3.7'
+
+install:
+  - pip install pipenv
+  - pipenv sync
+
+stages:
+  - black
+  - test
+  - build
+  - name: deploy
+    if: branch = master
+
+jobs:
+  include:
+    - stage: black
+      install: pip install black
+      script: black --check .
