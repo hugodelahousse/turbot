@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('workspaces', '0002_user_suffix'),
-    ]
+    dependencies = [("workspaces", "0002_user_suffix")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='has_permissions',
+            model_name="user",
+            name="has_permissions",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

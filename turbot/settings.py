@@ -16,85 +16,80 @@ import environ
 from slack import WebClient
 from dateutil import parser
 
-env = environ.Env(
-    DEBUG=(bool, False),
-)
+env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
-environ.Env().read_env(str(BASE_DIR / '.env'))
+environ.Env().read_env(str(BASE_DIR / ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 BASE_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = [
-]
+THIRD_PARTY_APPS = []
 
 LOCAL_APPS = [
-    'polls.apps.PollsConfig',
-    'workspaces.apps.WorkspacesConfig',
-    'reddit.apps.RedditConfig',
+    "polls.apps.PollsConfig",
+    "workspaces.apps.WorkspacesConfig",
+    "reddit.apps.RedditConfig",
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'turbot.urls'
+ROOT_URLCONF = "turbot.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
-WSGI_APPLICATION = 'turbot.wsgi.application'
+WSGI_APPLICATION = "turbot.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
-}
+DATABASES = {"default": env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')}
 
 
 # Password validation
@@ -102,26 +97,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -133,48 +122,40 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_ROOT = str(BASE_DIR / 'staticfiles')
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_URL = "/static/"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-STATICFILES_DIR = (
-    str(BASE_DIR / 'static'),
-)
+STATICFILES_DIR = (str(BASE_DIR / "static"),)
 
-SLACK_API_TOKEN = env('SLACK_API_TOKEN')
+SLACK_API_TOKEN = env("SLACK_API_TOKEN")
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
-        },
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+        }
     },
 }
 
-DELETE_FORBIDDEN = [
-    'UBZ2414LW',
-]
+DELETE_FORBIDDEN = ["UBZ2414LW"]
 
-ERROR_ICON_URL = env('ERROR_ICON_URL', None)
+ERROR_ICON_URL = env("ERROR_ICON_URL", None)
 
-PRAW_CLIENT_ID = env('PRAW_CLIENT_ID')
-PRAW_CLIENT_SECRET = env('PRAW_CLIENT_SECRET')
-PRAW_USER_AGENT = env('PRAW_USER_AGENT', default='turbot-slack by /u/guhogu')
+PRAW_CLIENT_ID = env("PRAW_CLIENT_ID")
+PRAW_CLIENT_SECRET = env("PRAW_CLIENT_SECRET")
+PRAW_USER_AGENT = env("PRAW_USER_AGENT", default="turbot-slack by /u/guhogu")
 
-REDDIT_SUBMISSION_CACHE_COUNT = env('REDDIT_SUBMISSION_CACHE_COUNT', default=5)
+REDDIT_SUBMISSION_CACHE_COUNT = env("REDDIT_SUBMISSION_CACHE_COUNT", default=5)
 
 SLACK_CLIENT = WebClient(SLACK_API_TOKEN)
 
-NIGHT_START = parser.parse(env('NIGHT_START', default='23:00')).time()
-NIGHT_END = parser.parse(env('NIGHT_END', default='09:00')).time()
+NIGHT_START = parser.parse(env("NIGHT_START", default="23:00")).time()
+NIGHT_END = parser.parse(env("NIGHT_END", default="09:00")).time()
 
-PHOTO_FSTRING = env('PHOTO_FSTRING', 'https://picsum.photos/200')
+PHOTO_FSTRING = env("PHOTO_FSTRING", "https://picsum.photos/200")

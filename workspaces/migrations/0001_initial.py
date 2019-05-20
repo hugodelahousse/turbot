@@ -8,31 +8,62 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Team',
+            name="Team",
             fields=[
-                ('id', models.CharField(db_index=True, max_length=30, primary_key=True, serialize=False)),
-                ('domain', models.CharField(db_index=True, max_length=128, unique=True)),
+                (
+                    "id",
+                    models.CharField(
+                        db_index=True, max_length=30, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "domain",
+                    models.CharField(db_index=True, max_length=128, unique=True),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.CharField(db_index=True, max_length=30, primary_key=True, serialize=False)),
-                ('name', models.CharField(db_index=True, max_length=128)),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', to='workspaces.Team')),
+                (
+                    "id",
+                    models.CharField(
+                        db_index=True, max_length=30, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=128)),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="users",
+                        to="workspaces.Team",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Channel',
+            name="Channel",
             fields=[
-                ('id', models.CharField(db_index=True, max_length=30, primary_key=True, serialize=False)),
-                ('name', models.CharField(db_index=True, max_length=128)),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='channels', to='workspaces.Team')),
+                (
+                    "id",
+                    models.CharField(
+                        db_index=True, max_length=30, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=128)),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="channels",
+                        to="workspaces.Team",
+                    ),
+                ),
             ],
         ),
     ]
