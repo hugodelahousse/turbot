@@ -12,4 +12,4 @@ COPY . /app
 
 CMD python manage.py migrate
 
-CMD gunicorn acu_bot.wsgi
+CMD gunicorn turbot.wsgi

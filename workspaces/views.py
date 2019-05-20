@@ -5,7 +5,7 @@ import ujson as json
 from django.http import HttpResponse, JsonResponse
 from slack import WebClient
 
-from acu_bot import settings
+from turbot import settings
 from workspaces.models import User
 from workspaces.utils import SLACK_ACTIONS, register_slack_action
 

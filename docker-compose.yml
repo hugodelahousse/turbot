@@ -8,9 +8,8 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_DB: "${POSTGRES_DB}"
 
-  acu-bot:
+  turbot:
     build: .
-    image: docker-registry.assistants.epita.fr:5000/delaho_h/acu-bot
     ports:
       - 8000:8000
     environment:

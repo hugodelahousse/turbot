@@ -64,7 +64,7 @@ def trigger(request):
     settings.SLACK_CLIENT.chat_postMessage(
         channel=channel.id,
         as_user=False,
-        text=f'{creator} triggered acu-reddit',
+        text=f'{creator} triggered turbot-reddit',
     )
 
     trigger_submissions(channel.id)
