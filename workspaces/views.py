@@ -13,11 +13,11 @@ sc = WebClient(settings.SLACK_API_TOKEN)
 logger = logging.getLogger('django')
 
 
-def get_photo_blocks(login, url, stalker=None):
+def get_photo_blocks(photo_slug, url, stalker=None):
     blocks = [
-        {'type': 'section', 'text': {'type': 'mrkdwn', 'text': f'*{login}*'}},
-        {'type': 'image', 'title': {'type': 'plain_text', 'text': f'{login}'}, 'image_url': url,
-         'alt_text': f'{login}'},
+        {'type': 'section', 'text': {'type': 'mrkdwn', 'text': f'*{photo_slug}*'}},
+        {'type': 'image', 'title': {'type': 'plain_text', 'text': f'{photo_slug}'}, 'image_url': url,
+         'alt_text': f'{photo_slug}'},
 
     ]
     if not stalker:
@@ -26,7 +26,7 @@ def get_photo_blocks(login, url, stalker=None):
             'elements': [
                 {
                     'type': 'button', 'text': {'type': 'plain_text', 'text': 'Send to Channel', },
-                    'action_id': login, 'value': 'photo.post',
+                    'action_id': photo_slug, 'value': 'photo.post',
                 }
             ]
         })
@@ -54,32 +54,32 @@ def action(request):
 
 
 def photo(request):
-    login = request.POST['text']
-    response = requests.head(f'https://photos.cri.epita.fr/thumb/{login}')
+    photo_slug = request.POST['text']
+    response = requests.head(settings.PHOTO_FSTRING.format(photo_slug))
     if response.status_code != 200:
-        return HttpResponse('No such login')
+        return HttpResponse('No such photo_slug')
 
     return JsonResponse({
-        'text': f'CRI Picture of {login}',
-        'blocks': get_photo_blocks(login, response.url)
+        'text': f'Picture of {photo_slug}',
+        'blocks': get_photo_blocks(photo_slug, response.url)
     })
 
 
 @register_slack_action('photo.post')
 def post_photo(payload):
     stalker = User(payload['user']['id'])
-    login = payload['actions'][0]['action_id']
+    photo_slug = payload['actions'][0]['action_id']
 
     blocks = get_photo_blocks(
-            login,
-            f'https://photos.cri.epita.fr/thumb/{login}',
-            stalker
+        photo_slug,
+        settings.PHOTO_FSTRING.format(photo_slug),
+        stalker
     )
 
     logger.debug(blocks)
 
     logger.debug(sc.chat_postMessage(
-        text=f'CRI Picture of {login}',
+        text=f'Picture of {photo_slug}',
         channel=payload['channel']['id'],
         blocks=blocks,
         as_user=False,
