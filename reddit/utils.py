@@ -75,6 +75,14 @@ def send_submission(submission: models.Submission):
     )
 
 
+def trigger_queryset(queryset):
+    for channel_id in queryset.values_list("channel", flat=True).distinct():
+        channel = models.Channel.objects.get(pk=channel_id)
+        submission = get_submission(channel)
+        if submission:
+            send_submission(submission)
+
+
 def trigger_submissions(*channels, respect_datetime=True):
     now = datetime.now().time()
     is_nightime = settings.NIGHT_START < now < settings.NIGHT_END
@@ -85,8 +93,4 @@ def trigger_submissions(*channels, respect_datetime=True):
     if channels:
         queryset = queryset.filter(channel_id__in=channels)
 
-    for channel_id in queryset.values_list("channel", flat=True).distinct():
-        channel = models.Channel.objects.get(pk=channel_id)
-        submission = get_submission(channel)
-        if submission:
-            send_submission(submission)
+    trigger_queryset(queryset)
