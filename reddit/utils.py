@@ -13,13 +13,21 @@ reddit = praw.Reddit(
 
 
 def get_submission(channel: models.Channel) -> Optional[models.Submission]:
-    subreddits = '+'.join((models.Subscription.objects.filter(channel=channel).values_list('subreddit', flat=True)))
+    subreddits = "+".join(
+        (
+            models.Subscription.objects.filter(channel=channel).values_list(
+                "subreddit", flat=True
+            )
+        )
+    )
 
     posts = reddit.subreddit(subreddits).hot()
-    posts = filter(lambda p: 'jpg' in p.url or 'png' in p.url, posts)
+    posts = filter(lambda p: "jpg" in p.url or "png" in p.url, posts)
 
     for post in posts:
-        if models.Submission.objects.filter(channel_id=channel.id, post_id=post.id).exists():
+        if models.Submission.objects.filter(
+            channel_id=channel.id, post_id=post.id
+        ).exists():
             continue
         return models.Submission.objects.create(
             channel=channel,
@@ -31,24 +39,37 @@ def get_submission(channel: models.Channel) -> Optional[models.Submission]:
 
 
 def send_submission(submission: models.Submission):
-    perma_link = f'https://reddit.com/r/{submission.subreddit}/comments/{submission.post_id}/'
+    perma_link = (
+        f"https://reddit.com/r/{submission.subreddit}/comments/{submission.post_id}/"
+    )
 
-    blocks = [{'type': 'section', 'text': {'type': 'mrkdwn', 'text': f'*<{perma_link}|{submission.title}>*'}}]
+    blocks = [
+        {
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": f"*<{perma_link}|{submission.title}>*"},
+        }
+    ]
 
-    if 'jpg' in submission.url or 'png' in submission.url:
-        blocks.append({'type': 'image', 'image_url': submission.url, 'alt_text': submission.url})
+    if "jpg" in submission.url or "png" in submission.url:
+        blocks.append(
+            {"type": "image", "image_url": submission.url, "alt_text": submission.url}
+        )
 
-    blocks.append({
-        'type': 'context',
-        'elements': [{
-            'type': 'mrkdwn',
-            'text': f'<https://reddit.com/r/{submission.subreddit}|/r/{submission.subreddit}>'
-        }]
-    })
+    blocks.append(
+        {
+            "type": "context",
+            "elements": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"<https://reddit.com/r/{submission.subreddit}|/r/{submission.subreddit}>",
+                }
+            ],
+        }
+    )
 
     settings.SLACK_CLIENT.chat_postMessage(
         channel=submission.channel.id,
-        text=f'New submission: {submission.title}',
+        text=f"New submission: {submission.title}",
         as_user=False,
         blocks=blocks,
     )
@@ -62,7 +83,7 @@ def trigger_submissions(*channels, respect_datetime=True):
     if channels:
         queryset = queryset.filter(channel_id__in=channels)
 
-    for channel_id in queryset.values_list('channel', flat=True).distinct():
+    for channel_id in queryset.values_list("channel", flat=True).distinct():
         channel = models.Channel.objects.get(pk=channel_id)
         submission = get_submission(channel)
         if submission:

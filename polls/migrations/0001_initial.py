@@ -8,55 +8,110 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('workspaces', '0001_initial'),
-    ]
+    dependencies = [("workspaces", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Choice',
+            name="Choice",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('index', models.PositiveSmallIntegerField()),
-                ('text', models.CharField(max_length=256)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("index", models.PositiveSmallIntegerField()),
+                ("text", models.CharField(max_length=256)),
             ],
         ),
         migrations.CreateModel(
-            name='UserChoice',
+            name="UserChoice",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('choice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='polls.Choice')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='workspaces.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "choice",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="polls.Choice"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="workspaces.User",
+                    ),
+                ),
             ],
-            options={
-                'unique_together': {('user', 'choice')},
-            },
+            options={"unique_together": {("user", "choice")}},
         ),
         migrations.CreateModel(
-            name='Poll',
+            name="Poll",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256)),
-                ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='polls', to='workspaces.Channel')),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_polls', to='workspaces.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256)),
+                (
+                    "channel",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="polls",
+                        to="workspaces.Channel",
+                    ),
+                ),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="created_polls",
+                        to="workspaces.User",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='choice',
-            name='poll',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='choices', to='polls.Poll'),
+            model_name="choice",
+            name="poll",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="choices",
+                to="polls.Poll",
+            ),
         ),
         migrations.AddField(
-            model_name='choice',
-            name='voters',
-            field=models.ManyToManyField(related_name='poll_choices', through='polls.UserChoice', to='workspaces.User'),
+            model_name="choice",
+            name="voters",
+            field=models.ManyToManyField(
+                related_name="poll_choices",
+                through="polls.UserChoice",
+                to="workspaces.User",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='choice',
-            constraint=models.CheckConstraint(check=models.Q(('index__gte', 0), ('index__lt', 9)), name='index_in_bounds'),
+            model_name="choice",
+            constraint=models.CheckConstraint(
+                check=models.Q(("index__gte", 0), ("index__lt", 9)),
+                name="index_in_bounds",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='choice',
-            unique_together={('index', 'poll')},
+            name="choice", unique_together={("index", "poll")}
         ),
     ]

@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('workspaces', '0001_initial'),
-    ]
+    dependencies = [("workspaces", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='suffix',
-            field=models.CharField(blank=True, default='', max_length=128),
-        ),
+            model_name="user",
+            name="suffix",
+            field=models.CharField(blank=True, default="", max_length=128),
+        )
     ]

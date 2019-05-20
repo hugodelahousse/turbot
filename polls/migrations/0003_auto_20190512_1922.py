@@ -5,13 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('polls', '0002_userchoice_created_at'),
-    ]
+    dependencies = [("polls", "0002_userchoice_created_at")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='userchoice',
-            options={'ordering': ('created_at',)},
-        ),
+            name="userchoice", options={"ordering": ("created_at",)}
+        )
     ]

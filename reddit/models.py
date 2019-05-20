@@ -16,12 +16,13 @@ class Submission(models.Model):
 
         # Deletes all old submissions
         # `delete()` does not support offsets
-        old_submissions = Submission.objects.filter(channel=self.channel)\
-            .order_by('-created_at')[settings.REDDIT_SUBMISSION_CACHE_COUNT:]
+        old_submissions = Submission.objects.filter(channel=self.channel).order_by(
+            "-created_at"
+        )[settings.REDDIT_SUBMISSION_CACHE_COUNT :]
         Submission.objects.filter(pk__in=old_submissions).delete()
 
     def __str__(self):
-        return f'Submission<{self.title}[{self.post_id}] in {self.channel.id}>'
+        return f"Submission<{self.title}[{self.post_id}] in {self.channel.id}>"
 
 
 class Subscription(models.Model):
@@ -30,7 +31,7 @@ class Subscription(models.Model):
     subreddit = models.CharField(max_length=128)
 
     class Meta:
-        unique_together = ('channel', 'subreddit')
+        unique_together = ("channel", "subreddit")
 
     def __str__(self):
-        return f'Subscription<to `{self.subreddit}` in {self.channel}>'
+        return f"Subscription<to `{self.subreddit}` in {self.channel}>"

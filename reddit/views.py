@@ -12,24 +12,22 @@ def subscribe(request):
     _, channel, creator = get_request_entities(request)
 
     try:
-        subreddit = reddit.subreddit(request.POST['text'])
+        subreddit = reddit.subreddit(request.POST["text"])
         subreddit.id
     except Exception:
         return SlackErrorResponse(f'Invalid subreddit name: `{request.POST["text"]}`')
 
     subscription, created = models.Subscription.objects.get_or_create(
-        creator=creator,
-        channel=channel,
-        subreddit=subreddit.display_name,
+        creator=creator, channel=channel, subreddit=subreddit.display_name
     )
 
     if not created:
-        return SlackErrorResponse(f'Already subscribed to: `{subreddit.display_name}`')
+        return SlackErrorResponse(f"Already subscribed to: `{subreddit.display_name}`")
 
     settings.SLACK_CLIENT.chat_postMessage(
         channel=channel.id,
         as_user=False,
-        text=f'{creator} added subscription to {subreddit.display_name}'
+        text=f"{creator} added subscription to {subreddit.display_name}",
     )
     return HttpResponse(status=200)
 
@@ -37,22 +35,21 @@ def subscribe(request):
 @transaction.atomic
 def unsubscribe(request):
     _, channel, creator = get_request_entities(request)
-    subreddit = request.POST['text']
+    subreddit = request.POST["text"]
 
     try:
         subscription = models.Subscription.objects.get(
-            channel=channel,
-            subreddit=subreddit
+            channel=channel, subreddit=subreddit
         )
     except models.Subscription.DoesNotExist:
-        return SlackErrorResponse(f'This channel is not subscribed to `{subreddit}`')
+        return SlackErrorResponse(f"This channel is not subscribed to `{subreddit}`")
 
     subscription.delete()
 
     settings.SLACK_CLIENT.chat_postMessage(
         channel=channel.id,
         as_user=False,
-        text=f'{creator} unsubscribed the channel from `{subreddit}`',
+        text=f"{creator} unsubscribed the channel from `{subreddit}`",
     )
     return HttpResponse(status=200)
 
@@ -62,9 +59,7 @@ def trigger(request):
     _, channel, creator = get_request_entities(request)
 
     settings.SLACK_CLIENT.chat_postMessage(
-        channel=channel.id,
-        as_user=False,
-        text=f'{creator} triggered turbot-reddit',
+        channel=channel.id, as_user=False, text=f"{creator} triggered turbot-reddit"
     )
 
     trigger_submissions(channel.id)
