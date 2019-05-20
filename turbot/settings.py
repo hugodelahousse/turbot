@@ -176,3 +176,5 @@ SLACK_CLIENT = WebClient(SLACK_API_TOKEN)
 
 NIGHT_START = parser.parse(env('NIGHT_START', default='23:00')).time()
 NIGHT_END = parser.parse(env('NIGHT_END', default='09:00')).time()
+
+PHOTO_FSTRING = env('PHOTO_FSTRING', 'https://picsum.photos/200')
