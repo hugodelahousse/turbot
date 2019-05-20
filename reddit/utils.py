@@ -77,7 +77,9 @@ def send_submission(submission: models.Submission):
 
 def trigger_submissions(*channels, respect_datetime=True):
     now = datetime.now().time()
-    if respect_datetime and settings.NIGHT_START < now < settings.NIGHT_END:
+    is_nightime = settings.NIGHT_START < now < settings.NIGHT_END
+
+    if respect_datetime and is_nightime:
         return
     queryset = models.Subscription.objects
     if channels:
