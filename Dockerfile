@@ -4,7 +4,7 @@ RUN pip install pipenv
 
 WORKDIR /app
 
-COPY Pipfile Pipfile.lock .
+COPY Pipfile Pipfile.lock ./
 
 RUN set -ex && pipenv install --deploy --system
 
