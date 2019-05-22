@@ -21,6 +21,7 @@ requests = "*"
 whitenoise = "*"
 praw = "*"
 python-dateutil = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.7"
