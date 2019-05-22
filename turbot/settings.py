@@ -121,7 +121,7 @@ USE_TZ = True
 
 # Sentry
 
-SENTRY_DSN = env("SENTRY_DSN", None)
+SENTRY_DSN = env("SENTRY_DSN", default=None)
 
 if SENTRY_DSN != None:
     import sentry_sdk
