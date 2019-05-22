@@ -126,9 +126,8 @@ SENTRY_DSN = env("SENTRY_DSN", None)
 if SENTRY_DSN != None:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
-    sentry_sdk.init(
-        SENTRY_DSN, integrations=[DjangoIntegration()]
-  )
+
+    sentry_sdk.init(SENTRY_DSN, integrations=[DjangoIntegration()])
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -143,7 +142,7 @@ STATICFILES_DIR = (str(BASE_DIR / "static"),)
 SLACK_API_TOKEN = env("SLACK_API_TOKEN")
 
 LOGGING = {
-    "version": 1
+    "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
@@ -170,5 +169,3 @@ NIGHT_START = parser.parse(env("NIGHT_START", default="23:00")).time()
 NIGHT_END = parser.parse(env("NIGHT_END", default="09:00")).time()
 
 PHOTO_FSTRING = env("PHOTO_FSTRING", default="https://picsum.photos/200")
-
-

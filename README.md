@@ -24,6 +24,7 @@ PRAW_CLIENT_ID='<YOUR REDDIT CLIENT ID>'
 PRAW_CLIENT_SECRET='<YOUR REDDIT CLIENT SECRET>'
 DEBUG=True
 PHOTO_FSTRING='<A FORMAT STRING TO SEND MEMBER PICTURES>'
+SENTRY_DSN='<SENTRY DSN URL>'
 ```
 
 To run the project locally, you can use the `docker-compose.yml` file as such:
