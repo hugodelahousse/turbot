@@ -124,10 +124,10 @@ USE_TZ = True
 SENTRY_DSN = env("SENTRY_DSN", None)
 
 if SENTRY_DSN != None:
-  import sentry_sdk
-  from sentry_sdk.integrations.django import DjangoIntegration
-  sentry_sdk.init(
-    SENTRY_DSN, integrations=[DjangoIntegration()]
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        SENTRY_DSN, integrations=[DjangoIntegration()]
   )
 
 # Static files (CSS, JavaScript, Images)
@@ -143,7 +143,7 @@ STATICFILES_DIR = (str(BASE_DIR / "static"),)
 SLACK_API_TOKEN = env("SLACK_API_TOKEN")
 
 LOGGING = {
-    "version": 1,
+    "version": 1
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
