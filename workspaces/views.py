@@ -1,7 +1,7 @@
 import logging
 import requests
 
-import ujson as json
+import json
 from django.http import HttpResponse, JsonResponse
 
 from turbot import settings
