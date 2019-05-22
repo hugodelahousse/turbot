@@ -127,7 +127,7 @@ if SENTRY_DSN != None:
   import sentry_sdk
   from sentry_sdk.integrations.django import DjangoIntegration
   sentry_sdk.init(
-    SENTRY_DSN, release="1.0", integrations=[DjangoIntegration()]
+    SENTRY_DSN, integrations=[DjangoIntegration()]
   )
 
 # Static files (CSS, JavaScript, Images)
