@@ -11,10 +11,8 @@ from workspaces.utils import (
     get_request_entities,
     register_slack_action,
 )
-from slack import WebClient
 from django.conf import settings
 
-sc = WebClient(settings.SLACK_API_TOKEN)
 logger = logging.getLogger("django")
 
 
@@ -37,7 +35,7 @@ def vote(payload):
         choice.voters.add(user)
 
     logger.debug(
-        sc.chat_update(
+        settings.SLACK_CLIENT.chat_update(
             ts=payload["message"]["ts"],
             text=f"Poll: {choice.poll.name}",
             channel=payload["channel"]["id"],

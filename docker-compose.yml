@@ -3,15 +3,11 @@ version: '3'
 services:
   postgres:
     image: postgres
-    environment:
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_DB: "${POSTGRES_DB}"
 
   turbot:
     build: .
     ports:
       - 8000:8000
     environment:
-      DATABASE_URL: "psql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      DATABASE_URL: "psql://postgres:postgres@postgres:5432/postgres"
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=4"
