@@ -119,6 +119,17 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Sentry
+
+SENTRY_DSN = env("SENTRY_DSN", None)
+
+if SENTRY_DSN != None:
+  import sentry_sdk
+  from sentry_sdk.integrations.django import DjangoIntegration
+  sentry_sdk.init(
+    SENTRY_DSN, release="1.0", integrations=[DjangoIntegration()]
+  )
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -159,3 +170,5 @@ NIGHT_START = parser.parse(env("NIGHT_START", default="23:00")).time()
 NIGHT_END = parser.parse(env("NIGHT_END", default="09:00")).time()
 
 PHOTO_FSTRING = env("PHOTO_FSTRING", default="https://picsum.photos/200")
+
+
