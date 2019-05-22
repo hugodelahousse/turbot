@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import datetime
+import datetime
 
 import praw
 from django.conf import settings
@@ -84,8 +84,8 @@ def trigger_queryset(queryset):
 
 
 def trigger_submissions(*channels, respect_datetime=True):
-    now = datetime.now().time()
-    is_nightime = settings.NIGHT_START < now < settings.NIGHT_END
+    now = datetime.datetime.now().time()
+    is_nightime = settings.NIGHT_START < now or now < settings.NIGHT_END
 
     if respect_datetime and is_nightime:
         return

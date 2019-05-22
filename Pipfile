@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 ipython = "*"
+pytest = "*"
+pytest-django = "*"
+model-mommy = "*"
 
 [packages]
 django = "*"

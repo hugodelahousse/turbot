@@ -3,8 +3,9 @@ language: python
 python:
   - '3.7'
 
-install:
+before_install:
   - pip install pipenv
+install:
   - pipenv sync
 
 stages:
@@ -19,6 +20,14 @@ jobs:
     - stage: black
       install: pip install black
       script: black --check .
+
+    - stage: test
+      install:
+        - pipenv sync --dev
+      script:
+        - pytest
+      after_success:
+        - coveralls
 
 branches:
   only:
