@@ -18,17 +18,31 @@ stages:
   if: branch = master
 jobs:
   include:
-  - stage: black
-    install: pip install black
-    script: black --check .
-  - stage: test
-    install:
-    - pipenv sync --dev
-    - pip install coveralls
-    script:
-    - pytest
-    after_success:
-    - coveralls
+    - stage: black
+      install: pip install black
+      script: black --check .
+
+    - stage: test
+      install:
+        - pipenv sync --dev
+        - pip install coveralls
+      script:
+        - pytest
+      after_success:
+        - coveralls
+
+    - stage: build
+      script:
+        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
+            export TAG=latest;yy
+            docker push hugodelahousse/turbot:latest;
+          else
+            export TAG=$TRAVIS_BRANCH;
+          fi
+        - docker build -t hugodelahousse/turbot:$TAG .
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push hugodelahousse/turbot:$TAG;
+
 branches:
   only:
   - master
