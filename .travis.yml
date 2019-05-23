@@ -34,10 +34,10 @@ jobs:
     - stage: build
       script:
         - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            export TAG=latest;yy
+            export TAG=latest;
             docker push hugodelahousse/turbot:latest;
           else
-            export TAG=$TRAVIS_BRANCH;
+            export TAG=$TRAVIS_PULL_REQUEST_BRANCH;
           fi
         - docker build -t hugodelahousse/turbot:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
