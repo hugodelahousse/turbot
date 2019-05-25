@@ -12,6 +12,10 @@ reddit = praw.Reddit(
 )
 
 
+def has_valid_extension(url):
+    return any(lambda ext: ext in url, settings.REDDIT_VALID_EXTENSION)
+
+
 def get_submission(channel: models.Channel) -> Optional[models.Submission]:
     subreddits = "+".join(
         (
@@ -22,7 +26,7 @@ def get_submission(channel: models.Channel) -> Optional[models.Submission]:
     )
 
     posts = reddit.subreddit(subreddits).hot()
-    posts = filter(lambda p: "jpg" in p.url or "png" in p.url, posts)
+    posts = filter(lambda p: has_valid_extension(p.url), posts)
 
     for post in posts:
         if models.Submission.objects.filter(
@@ -50,7 +54,7 @@ def send_submission(submission: models.Submission):
         }
     ]
 
-    if "jpg" in submission.url or "png" in submission.url:
+    if has_valid_extension(submission.url):
         blocks.append(
             {"type": "image", "image_url": submission.url, "alt_text": submission.url}
         )
