@@ -55,7 +55,7 @@ def delete(payload):
 
     if not user.has_permissions:
         logger.debug(
-            sc.chat_postMessage(
+            settings.SLACK_CLIENT.chat_postMessage(
                 text=f"I'm sorry {user.slack_username}, I'm afraid I can't do that...",
                 channel=poll.channel.id,
                 as_user=False,
@@ -64,13 +64,13 @@ def delete(payload):
         return HttpResponse(200)
 
     logger.debug(
-        sc.chat_delete(
+        settings.SLACK_CLIENT.chat_delete(
             ts=payload["message"]["ts"], channel=poll.channel.id, as_user=False
         )
     )
 
     logger.debug(
-        sc.chat_postMessage(
+        settings.SLACK_CLIENT.chat_postMessage(
             text=f"A poll was deleted by {user.slack_username}",
             channel=poll.channel.id,
             as_user=False,
@@ -100,7 +100,7 @@ def create(request):
         poll.choices.create(index=index, text=choice)
 
     logger.debug(
-        sc.chat_postMessage(
+        settings.SLACK_CLIENT.chat_postMessage(
             channel=channel.id,
             text=f"Poll: {poll.name}",
             blocks=poll.slack_blocks,
