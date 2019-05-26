@@ -1,7 +1,7 @@
 # Turbot
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/python/black)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/hugodelahousse/turbot.svg?style=for-the-badge)](https://codeclimate.com/github/hugodelahousse/turbot/maintainability)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/hugodelahousse/turbot.svg?style=flat-square)](https://codeclimate.com/github/hugodelahousse/turbot/maintainability)
 [![Coverage](https://img.shields.io/coveralls/github/hugodelahousse/turbot.svg?style=flat-square)](https://coveralls.io/github/hugodelahousse/turbot?branch=master)
 [![Build Status](https://img.shields.io/travis/com/hugodelahousse/turbot.svg?style=flat-square)](https://travis-ci.com/hugodelahousse/turbot)
 [![Docker Build](https://img.shields.io/docker/cloud/build/hugodelahousse/turbot.svg?style=flat-square)](https://cloud.docker.com/repository/docker/hugodelahousse/turbot)
