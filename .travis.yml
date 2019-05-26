@@ -11,11 +11,14 @@ before_install:
 install:
 - pipenv sync
 stages:
-- black
-- test
-- build
-- name: deploy
-  if: branch = master
+  - black
+  - test
+  - build
+  - name: deploy-prod
+    if: head_branch IS blank AND branch = master AND tag IS present
+  - name: deploy-stagging
+    if: head_branch IS blank AND branch = master AND tag is blank
+
 jobs:
   include:
     - stage: black
@@ -42,6 +45,21 @@ jobs:
         - docker build -t hugodelahousse/turbot:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push hugodelahousse/turbot:$TAG;
+
+    - stage: deploy-prod
+      script: skip
+      deploy:
+        provider: heroku
+        app: turbot-prod
+        api_key: $HEROKU_AUTH_KEY
+
+    - stage: deploy-stagging
+      script: skip
+      deploy:
+        provider: heroku
+        app: turbot-stagging
+        api_key: $HEROKU_AUTH_KEY
+
 
 branches:
   only:
