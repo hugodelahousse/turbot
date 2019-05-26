@@ -13,7 +13,7 @@ reddit = praw.Reddit(
 
 
 def has_valid_extension(url):
-    return any(lambda ext: ext in url, settings.REDDIT_VALID_EXTENSION)
+    return any(ext in url for ext in settings.REDDIT_VALID_EXTENSION)
 
 
 def get_submission(channel: models.Channel) -> Optional[models.Submission]:
