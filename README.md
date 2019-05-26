@@ -1,9 +1,11 @@
 # Turbot
 
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/python/black)
-[![Maintainability](https://api.codeclimate.com/v1/badges/8a62b8af6f7a9eed396c/maintainability)](https://codeclimate.com/github/hugodelahousse/turbot/maintainability)
-[![Coverage Status](https://coveralls.io/repos/github/hugodelahousse/turbot/badge.svg?branch=master)](https://coveralls.io/github/hugodelahousse/turbot?branch=master)
-[![Build Status](https://travis-ci.com/hugodelahousse/turbot.svg?branch=master)](https://travis-ci.com/hugodelahousse/turbot)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/python/black)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/hugodelahousse/turbot.svg?style=for-the-badge)](https://codeclimate.com/github/hugodelahousse/turbot/maintainability)
+[![Coverage](https://img.shields.io/coveralls/github/hugodelahousse/turbot.svg?style=for-the-badge)](https://coveralls.io/github/hugodelahousse/turbot?branch=master)
+[![Build Status](https://img.shields.io/travis/com/hugodelahousse/turbot.svg?style=for-the-badge)](https://travis-ci.com/hugodelahousse/turbot)
+[![Docker Build](https://img.shields.io/docker/cloud/build/hugodelahousse/turbot.svg?style=for-the-badge)](https://cloud.docker.com/repository/docker/hugodelahousse/turbot)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/hugodelahousse/turbot.svg?style=for-the-badge)](https://cloud.docker.com/repository/docker/hugodelahousse/turbot/builds)
 
 
 This repository uses [black](https://github.com/python/black) to check the coding style. You should probably
