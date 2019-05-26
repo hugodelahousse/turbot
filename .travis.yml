@@ -38,23 +38,35 @@ jobs:
       script:
         - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
             export TAG=latest;
-            docker push hugodelahousse/turbot:latest;
           else
-            export TAG=$TRAVIS_PULL_REQUEST_BRANCH;
+            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
           fi
         - docker build -t hugodelahousse/turbot:$TAG .
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push hugodelahousse/turbot:$TAG;
 
     - stage: deploy-prod
-      script: skip
+      script:
+        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
+            export TAG=latest;
+          else
+            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
+          fi
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push hugodelahousse/turbot:$TAG;
       deploy:
         provider: heroku
         app: turbot-prod
         api_key: $HEROKU_AUTH_KEY
 
     - stage: deploy-stagging
-      script: skip
+      script:
+        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
+            export TAG=latest;
+          else
+            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
+          fi
+        - docker build -t hugodelahousse/turbot:$TAG .
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push hugodelahousse/turbot:$TAG;
       deploy:
         provider: heroku
         app: turbot-stagging
