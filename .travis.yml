@@ -50,6 +50,7 @@ jobs:
         - docker push $DOCKER_REGISTRY:$TAG;
       on:
         tags: true
+      if: tag IS present
       deploy:
         provider: heroku
         app: $HEROKU_APP
