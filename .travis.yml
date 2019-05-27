@@ -62,5 +62,8 @@ branches:
   only:
   - master
 notifications:
-  slack: $SLACK_TRAVIS_TOKEN
+  slack:
+    secure: BztU/3JEu+la1Wv3+OZO6OSeaptf2SC6v+ur5Ry0/8yGVgysPy7RyOJpu3PBigozfXuIWoygCEpUHfhRBf8tgsOGZ7SYJaQdONF+V1aRTfjcKk155NEpAFokp47Ys0IcPeck9fxPQRgSyorfX1iQ2eaVduBmD0iGsia8tvaWprOnZgHeMmtSBBmuBkLY1mYYlEgzz7OJDWhzEU+ApdwJWR8l/W916cNANT/05zNucGCwnrVYmN3Rk2v10r7tGSd4wBAKcPN8dLyivxZ4di/mSfLpElBECx9eBjckVWT/Iv5DLcln8plJuO4EaeKNp/h32/Bp6c+c7KqUwQbJ3CFlV23DWQ/USasJlCpgplGXNg9rDhHCwDMBdMYD8l08jVXd8txkJdiA5PoSWLvSIICr1/ZWT+GznqWNEZE0VVEH8sDRRexDK13c9w1RX9XqG9isV4+fJJ2BJzOh7/omrZxOWtfcOpbrlO1r3v7zmzpUoRkeJDs37EBjNruEyL4E2LJlk7hz1vUnnESdBaV3PF1x7fBmrG5ukKUUeNDwmrOiE+ZruAT35P0gXP4mWKdU5nvJIYpIhRI43732sZ9EMcfpT2cWk8eXOlZsOuaHOU9PwY5fwqWSqjsm/XpozD45sVvqTe6hiltXF7OgqNlm6xcirFzfz9LB3V0QPiJuVJC6u1U=
     on_success: always
+    on_pull_request: true
+    on_failure: always
