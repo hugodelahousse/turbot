@@ -17,7 +17,7 @@ stages:
   - build
   - name: deploy-prod
     if: head_branch IS blank AND branch = master AND tag IS present
-  - name: deploy-stagging
+  - name: deploy-staging
     if: head_branch IS blank AND branch = master AND tag is blank
 
 before_script:
@@ -63,7 +63,7 @@ jobs:
         - docker push $DOCKER_REGISTRY:$TAG;
       deploy:
         provider: heroku
-        app: $HEROKU_STAGING_APP
+        app: $HEROKU_APP_STAGING
         api_key: $HEROKU_AUTH_KEY
 
 
