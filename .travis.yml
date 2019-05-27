@@ -15,10 +15,7 @@ stages:
   - black
   - test
   - build
-  - name: deploy-prod
-    if: head_branch IS blank AND branch = master AND tag IS present
-  - name: deploy-staging
-    if: head_branch IS blank AND branch = master AND tag is blank
+  - deploy
 
 before_script:
   - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
@@ -46,22 +43,26 @@ jobs:
       script:
         - docker build -t $DOCKER_REGISTRY:$TAG .
 
-    - stage: deploy-prod
+    - stage: deploy
       script:
         - docker build -t $DOCKER_REGISTRY:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push $DOCKER_REGISTRY:$TAG;
+      on:
+        tags: true
       deploy:
         provider: heroku
         app: $HEROKU_APP
         api_key: $HEROKU_AUTH_KEY
 
-    - stage: deploy-staging
+    - stage: deploy
       script:
         - docker build -t $DOCKER_REGISTRY:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push $DOCKER_REGISTRY:$TAG;
       deploy:
+        on:
+          branch: master
         provider: heroku
         app: $HEROKU_APP_STAGING
         api_key: $HEROKU_AUTH_KEY
