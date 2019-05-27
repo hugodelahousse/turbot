@@ -33,23 +33,21 @@ jobs:
     script:
     - docker build -t $DOCKER_REGISTRY:$TAG .
   - stage: deploy
+    if: tag IS present
     script:
     - docker build -t $DOCKER_REGISTRY:$TAG .
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker push $DOCKER_REGISTRY:$TAG;
-    if: tag IS present
-    on:
-      tags: true
     deploy:
       provider: heroku
       app: "$HEROKU_APP"
       api_key: "$HEROKU_AUTH_KEY"
   - stage: deploy
+    if: branch = master
     script:
     - docker build -t $DOCKER_REGISTRY:$TAG .
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker push $DOCKER_REGISTRY:$TAG;
-    if: branch= master
     deploy:
       provider: heroku
       app: "$HEROKU_APP_STAGING"
