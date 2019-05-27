@@ -10,6 +10,7 @@ before_install:
 - pip install pipenv
 install:
 - pipenv sync
+
 stages:
   - black
   - test
@@ -18,6 +19,13 @@ stages:
     if: head_branch IS blank AND branch = master AND tag IS present
   - name: deploy-stagging
     if: head_branch IS blank AND branch = master AND tag is blank
+
+before_script:
+  - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
+      export TAG=latest;
+    else
+      export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
+    fi
 
 jobs:
   include:
@@ -36,40 +44,26 @@ jobs:
 
     - stage: build
       script:
-        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            export TAG=latest;
-          else
-            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
-          fi
-        - docker build -t hugodelahousse/turbot:$TAG .
+        - docker build -t $DOCKER_REGISTRY:$TAG .
 
     - stage: deploy-prod
       script:
-        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            export TAG=latest;
-          else
-            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
-          fi
+        - docker build -t $DOCKER_REGISTRY:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push hugodelahousse/turbot:$TAG;
+        - docker push $DOCKER_REGISTRY:$TAG;
       deploy:
         provider: heroku
-        app: turbot-prod
+        app: $HEROKU_APP
         api_key: $HEROKU_AUTH_KEY
 
-    - stage: deploy-stagging
+    - stage: deploy-staging
       script:
-        - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            export TAG=latest;
-          else
-            export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
-          fi
-        - docker build -t hugodelahousse/turbot:$TAG .
+        - docker build -t $DOCKER_REGISTRY:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push hugodelahousse/turbot:$TAG;
+        - docker push $DOCKER_REGISTRY:$TAG;
       deploy:
         provider: heroku
-        app: turbot-stagging
+        app: $HEROKU_STAGING_APP
         api_key: $HEROKU_AUTH_KEY
 
 
