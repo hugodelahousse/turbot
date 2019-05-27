@@ -61,9 +61,8 @@ jobs:
         - docker build -t $DOCKER_REGISTRY:$TAG .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push $DOCKER_REGISTRY:$TAG;
+      if: branch = master
       deploy:
-        on:
-          branch: master
         provider: heroku
         app: $HEROKU_APP_STAGING
         api_key: $HEROKU_AUTH_KEY
