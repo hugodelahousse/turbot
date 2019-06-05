@@ -15,10 +15,15 @@ class Poll(models.Model):
 
     @property
     def slack_blocks(self):
+        total_votes = UserChoice.objects.filter(choice__poll__id=self.id).count()
+
         return [
             {
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": f"*{self.name}*"},
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*{self.name}*\n\nTotal votes: `{total_votes}`",
+                },
                 "accessory": {
                     "type": "button",
                     "text": {
