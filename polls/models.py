@@ -22,7 +22,7 @@ class Poll(models.Model):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"*{self.name}*" "\n\nTotal votes: `{total_votes}`",
+                    "text": f"*{self.name}*\n\nTotal votes: `{total_votes}`",
                 },
                 "accessory": {
                     "type": "button",
