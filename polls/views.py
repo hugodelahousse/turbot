@@ -4,7 +4,7 @@ import re
 from django.db import transaction
 from django.http import HttpResponse
 
-from polls.models import Poll, Choice
+from polls.models import Poll, Choice, UserChoice
 from workspaces.models import User
 from workspaces.utils import (
     SlackErrorResponse,
@@ -32,6 +32,10 @@ def vote(payload):
     if choice.voters.filter(id=user.id).exists():
         choice.voters.remove(user)
     else:
+        if choice.poll.unique_choice:
+            UserChoice.objects.filter(
+                user__id=user.id, choice__poll=choice.poll
+            ).delete()
         choice.voters.add(user)
 
     logger.debug(
@@ -82,7 +86,7 @@ def delete(payload):
 
 
 @transaction.atomic
-def create(request):
+def create(request, unique=False):
     values = re.findall(r'\s*"([^"]+)"\s*', request.POST["text"])
     if len(values) < 3:
         return SlackErrorResponse(
@@ -94,7 +98,9 @@ def create(request):
 
     team, channel, creator = get_request_entities(request)
 
-    poll = Poll.objects.create(name=name, creator=creator, channel=channel)
+    poll = Poll.objects.create(
+        name=name, creator=creator, channel=channel, unique_choice=unique
+    )
 
     for index, choice in enumerate(choices):
         poll.choices.create(index=index, text=choice)
@@ -109,3 +115,7 @@ def create(request):
     )
 
     return HttpResponse(status=200)
+
+
+def create_unique(request):
+    return create(request, unique=True)

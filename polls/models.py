@@ -12,6 +12,7 @@ class Poll(models.Model):
         User, related_name="created_polls", on_delete=models.CASCADE
     )
     channel = models.ForeignKey(Channel, related_name="polls", on_delete=models.CASCADE)
+    unique_choice = models.BooleanField(default=False)
 
     @property
     def slack_blocks(self):
