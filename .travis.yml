@@ -21,7 +21,7 @@ before_script:
   - if [ $TRAVIS_PULL_REQUEST == "false" ]; then
       export TAG=latest;
     else
-      export TAG="pr-$TRAVIS_PULL_REQUEST_BRANCH";
+      export TAG="pull-request-$TRAVIS_PULL_REQUEST";
     fi
 
 jobs:
