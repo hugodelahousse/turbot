@@ -16,6 +16,21 @@ from django.conf import settings
 logger = logging.getLogger("django")
 
 
+class InvalidPollException(BaseException):
+    pass
+
+
+def get_poll_choices(text) -> (str, [str]):
+    values = re.findall(rf'\s*[‘’“”\'"]([^‘’“”\'"]+)[‘’“”\'"]\s*', text)
+
+    if len(values) < 3:
+        raise InvalidPollException("You must provide a name and at least two choices")
+    elif len(values) > 10:
+        raise InvalidPollException("You cannot have more than 9 choices")
+
+    return values[0], values[1:]
+
+
 @transaction.atomic
 @register_slack_action("polls.vote")
 def vote(payload):
@@ -87,14 +102,10 @@ def delete(payload):
 
 @transaction.atomic
 def create(request, unique=False):
-    values = re.findall(r'\s*"([^"]+)"\s*', request.POST["text"])
-    if len(values) < 3:
-        return SlackErrorResponse(
-            ":x: You must provide a name and at least two choices :x:"
-        )
-    name, *choices = values
-    if len(choices) > 9:
-        return SlackErrorResponse(":x: You cannot have more than 9 choices :x:")
+    try:
+        name, choices = get_poll_choices(request.POST["text"])
+    except InvalidPollException as e:
+        return SlackErrorResponse(f":x: {e} :x:")
 
     team, channel, creator = get_request_entities(request)
 
