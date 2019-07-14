@@ -101,7 +101,7 @@ def delete(payload):
 
 
 @transaction.atomic
-def create(request, unique=False):
+def create(request, unique=False, anonymous=False):
     try:
         name, choices = get_poll_choices(request.POST["text"])
     except InvalidPollException as e:
@@ -110,7 +110,12 @@ def create(request, unique=False):
     team, channel, creator = get_request_entities(request)
 
     poll = Poll.objects.create(
-        name=name, creator=creator, channel=channel, unique_choice=unique
+        name=name,
+        creator=creator,
+        channel=channel,
+        unique_choice=unique,
+        anonymous=anonymous,
+        show_results=not anonymous,
     )
 
     for index, choice in enumerate(choices):

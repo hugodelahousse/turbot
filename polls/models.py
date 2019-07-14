@@ -13,6 +13,8 @@ class Poll(models.Model):
     )
     channel = models.ForeignKey(Channel, related_name="polls", on_delete=models.CASCADE)
     unique_choice = models.BooleanField(default=False)
+    anonymous = models.BooleanField(default=False)
+    visible_results = models.BooleanField(default=True)
 
     @property
     def slack_blocks(self):
@@ -45,7 +47,7 @@ class Poll(models.Model):
             },
             {"type": "divider"},
             *map(
-                lambda c: c.slack_block,
+                lambda c: c.get_slack_block(self.visible_results, self.anonymous),
                 self.choices.order_by("index").prefetch_related("voters").all(),
             ),
             {
@@ -99,13 +101,20 @@ class Choice(models.Model):
     def slack_voters(self):
         return " ".join(map(lambda u: u.slack_username, self.voters.all()))
 
-    @property
-    def slack_block(self):
+    def get_slack_block(self, show_results=True, anonymous=False):
+        voter_count = ""
+        if show_results:
+            voter_count = f"\t`{self.voters.count()}`"
+
+        voters = ""
+        if not anonymous:
+            voters = f"\n{self.slack_voters}"
+
         return {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{self.slack_text}\n{self.slack_voters}",
+                "text": f"{self.slack_text}{voter_count}{voters}",
             },
             "accessory": {
                 "type": "button",
