@@ -115,7 +115,7 @@ def create(request, unique=False, anonymous=False):
         channel=channel,
         unique_choice=unique,
         anonymous=anonymous,
-        show_results=not anonymous,
+        visible_results=not anonymous,
     )
 
     for index, choice in enumerate(choices):
