@@ -95,7 +95,7 @@ class Choice(models.Model):
 
     @property
     def slack_text(self):
-        return f"{int_to_emoji(self.index)} {self.text}\t`{self.voters.count()}`"
+        return f"{int_to_emoji(self.index)} {self.text}"
 
     @property
     def slack_voters(self):
