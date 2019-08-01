@@ -133,5 +133,24 @@ def create(request, unique=False, anonymous=False):
     return HttpResponse(status=200)
 
 
-def create_unique(request):
-    return create(request, unique=True)
+@transaction.atomic
+@register_slack_action("polls.reveal")
+def reveal_results(payload):
+    user = User.objects.get(id=payload["user"]["id"])
+    poll = Poll.objects.get(id=payload["actions"][0]["action_id"])
+
+    if poll.creator.id != user.id:
+        return SlackErrorResponse(f"You are not the creator of this poll.")
+
+    poll.visible_results = True
+    poll.save()
+
+    settings.SLACK_CLIENT.chat_update(
+        ts=payload["message"]["ts"],
+        text=f"Poll: {poll.name}",
+        channel=payload["channel"]["id"],
+        as_user=False,
+        blocks=poll.slack_blocks,
+    )
+
+    return HttpResponse(status=200)

@@ -50,6 +50,28 @@ class Poll(models.Model):
                 lambda c: c.get_slack_block(self.visible_results, self.anonymous),
                 self.choices.order_by("index").prefetch_related("voters").all(),
             ),
+            # Dirty hack, don't do this at home
+            *(
+                [
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Reveal results",
+                                    "emoji": True,
+                                },
+                                "value": "polls.reveal",
+                                "action_id": f"{self.id}",
+                            }
+                        ],
+                    }
+                ]
+                if not self.visible_results
+                else []
+            ),
             {
                 "type": "context",
                 "elements": [
