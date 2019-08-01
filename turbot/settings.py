@@ -171,3 +171,5 @@ NIGHT_END = parser.parse(env("NIGHT_END", default="09:00")).time()
 PHOTO_FSTRING = env("PHOTO_FSTRING", default="https://picsum.photos/200")
 
 REDDIT_VALID_EXTENSION = ["jpg", "png", "gif"]
+
+TURBOT_USER_ID = env("TURBOT_USER_ID")

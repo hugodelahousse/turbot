@@ -1,6 +1,7 @@
 import logging
 import re
 
+import slack.errors
 from django.db import transaction
 from django.http import HttpResponse
 
@@ -121,14 +122,17 @@ def create(request, unique=False, anonymous=False):
     for index, choice in enumerate(choices):
         poll.choices.create(index=index, text=choice)
 
-    logger.debug(
+    try:
         settings.SLACK_CLIENT.chat_postMessage(
             channel=channel.id,
             text=f"Poll: {poll.name}",
             blocks=poll.slack_blocks,
             as_user=False,
         )
-    )
+    except slack.errors.SlackApiError:
+        return SlackErrorResponse(
+            f":x: Could not create the poll. Is <@{settings.TURBOT_USER_ID}> in the channel ? :x:"
+        )
 
     return HttpResponse(status=200)
 
