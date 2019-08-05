@@ -159,7 +159,9 @@ ERROR_ICON_URL = env("ERROR_ICON_URL", None)
 
 PRAW_CLIENT_ID = env("PRAW_CLIENT_ID")
 PRAW_CLIENT_SECRET = env("PRAW_CLIENT_SECRET")
-PRAW_USER_AGENT = env("PRAW_USER_AGENT", default="turbot-slack by /u/guhogu")
+PRAW_USER_AGENT = env(
+    "PRAW_USER_AGENT", default=f"turbot-slack by /u/{env('REDDIT_USERNAME', 'unknown')}"
+)
 
 REDDIT_SUBMISSION_CACHE_COUNT = env("REDDIT_SUBMISSION_CACHE_COUNT", default=5)
 
