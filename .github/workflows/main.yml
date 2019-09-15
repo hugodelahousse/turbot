@@ -14,9 +14,9 @@ jobs:
       with:
         args: . --check
     - name: Install requirements
-      run: |
-        pip install pipenv
-        pipenv sync --dev
+      uses: peaceiris/actions-pipenv@3.6
+      with:
+        args: sync --dev
     - name: Pytest
       uses: cclauss/GitHub-Action-for-pytest@0.0.2
       with:
