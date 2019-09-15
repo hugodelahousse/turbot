@@ -13,6 +13,10 @@ jobs:
       uses: lgeiger/black-action@v1.0.1
       with:
         args: . --check
+    - name: Install requirements
+      run: |
+        pip install pipenv
+        pipenv sync --dev
     - name: Pytest
       uses: cclauss/GitHub-Action-for-pytest@0.0.2
       with:
