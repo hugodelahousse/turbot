@@ -16,13 +16,14 @@ from django.conf import settings
 
 logger = logging.getLogger("django")
 
+POLL_TEXT_PATTERN = re.compile('\s*(?P<start_quote>[‘’“”\'"])(((?!(?P=start_quote)).)+)(?P=start_quote)\s*')
 
 class InvalidPollException(BaseException):
     pass
 
 
 def get_poll_choices(text) -> (str, [str]):
-    values = re.findall(rf'\s*[‘’“”\'"]([^‘’“”\'"]+)[‘’“”\'"]\s*', text)
+    values = [value[1] for value in POLL_TEXT_PATTERN.findall(text)]
 
     if len(values) < 3:
         raise InvalidPollException("You must provide a name and at least two choices")
